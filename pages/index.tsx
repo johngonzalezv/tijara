@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { gql, useQuery } from '@apollo/client';
 import Link from 'next/link';
-import { AwesomeLink } from '../components/AwesomeLink';
+import { Product } from '../components/Product';
 
 const AllLinksQuery = gql`
   query allLinksQuery($first: Int, $after: String) {
@@ -38,7 +38,7 @@ function Home() {
   return (
     <div>
       <Head>
-        <title>Awesome Links</title>
+        <title>Tijara</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="container mx-auto max-w-5xl my-20 px-5">
@@ -46,7 +46,7 @@ function Home() {
           {data?.links.edges.map(({ node }, i) => (
             <Link href={`/link/${node.id}`} key={i}>
               <a>
-                <AwesomeLink
+                <Product
                   title={node.title}
                   category={node.category}
                   url={node.url}
