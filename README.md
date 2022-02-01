@@ -1,3 +1,3 @@
-# Awesome Links - part-3
+# Tijara
 
-This branch contains the final code for [this article](https://prisma.io/blog/fullstack-nextjs-graphql-prisma-2-fwpc6ds155), and will be the starting point for the 3rd part of the course (still being written)
+Code forked from [prisma awesome-links](https://github.com/prisma/awesome-links). Is the starting point for tijara project. A market place with focus on merchant providers users.
