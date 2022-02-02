@@ -1,31 +1,30 @@
 import { nonNull, objectType, stringArg, extendType } from 'nexus';
 import { connectionFromArraySlice, cursorToOffset } from 'graphql-relay';
 
-export const Link = objectType({
-  name: 'Link',
+export const Product = objectType({
+  name: 'Product',
   definition(t) {
     t.string('id');
     t.int('index');
     t.string('title');
-    t.string('url');
+    t.string('price');
     t.string('description');
     t.string('imageUrl');
-    t.string('category');
   },
 });
 
-export const LinksQuery = extendType({
+export const ProductQuery = extendType({
   type: 'Query',
   definition(t) {
-    t.connectionField('links', {
-      type: Link,
+    t.connectionField('products', {
+      type: Product,
       resolve: async (_, { after, first }, ctx) => {
         const offset = after ? cursorToOffset(after) + 1 : 0;
         if (isNaN(offset)) throw new Error('cursor is invalid');
 
         const [totalCount, items] = await Promise.all([
-          ctx.prisma.link.count(),
-          ctx.prisma.link.findMany({
+          ctx.prisma.product.count(),
+          ctx.prisma.product.findMany({
             take: first,
             skip: offset,
           }),
@@ -41,16 +40,15 @@ export const LinksQuery = extendType({
   },
 });
 
-export const CreateLinkMutation = extendType({
+export const CreateProductMutation = extendType({
   type: 'Mutation',
   definition(t) {
-    t.nonNull.field('createLink', {
-      type: Link,
+    t.nonNull.field('createProduct', {
+      type: Product,
       args: {
         title: nonNull(stringArg()),
-        url: nonNull(stringArg()),
+        price: nonNull(stringArg()),
         imageUrl: nonNull(stringArg()),
-        category: nonNull(stringArg()),
         description: nonNull(stringArg()),
       },
       async resolve(_parent, args, ctx) {
@@ -67,15 +65,14 @@ export const CreateLinkMutation = extendType({
         if (user.role !== 'ADMIN') {
           throw new Error('You do not have permission to perform action')
         }
-        const newLink = {
+        const newProduct = {
           title: args.title,
-          url: args.url,
+          price: args.price,
           imageUrl: args.imageUrl,
-          category: args.category,
           description: args.description,
         }
-        return await ctx.prisma.link.create({
-          data: newLink,
+        return await ctx.prisma.product.create({
+          data: newProduct,
         })
       },
     })

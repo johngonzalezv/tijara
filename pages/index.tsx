@@ -3,9 +3,9 @@ import { gql, useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { Product } from '../components/Product';
 
-const AllLinksQuery = gql`
-  query allLinksQuery($first: Int, $after: String) {
-    links(first: $first, after: $after) {
+const AllProductsQuery = gql`
+  query allProductsQuery($first: Int, $after: String) {
+    products(first: $first, after: $after) {
       pageInfo {
         endCursor
         hasNextPage
@@ -14,9 +14,8 @@ const AllLinksQuery = gql`
         cursor
         node {
           imageUrl
-          url
+          price
           title
-          category
           description
           id
         }
@@ -26,15 +25,15 @@ const AllLinksQuery = gql`
 `;
 
 function Home() {
-  const { data, loading, error, fetchMore } = useQuery(AllLinksQuery, {
-    variables: { first: 3 },
+  const { data, loading, error, fetchMore } = useQuery(AllProductsQuery, {
+    variables: { first: 2 },
   });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Oh no... {error.message}</p>;
 
-  const { endCursor, hasNextPage } = data?.links.pageInfo;
-
+  const { endCursor, hasNextPage } = data?.products.pageInfo;
+  console.log(endCursor);
   return (
     <div>
       <Head>
@@ -43,13 +42,12 @@ function Home() {
       </Head>
       <div className="container mx-auto max-w-5xl my-20 px-5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {data?.links.edges.map(({ node }, i) => (
+          {data?.products.edges.map(({ node }, i) => (
             <Link href={`/link/${node.id}`} key={i}>
               <a>
                 <Product
                   title={node.title}
-                  category={node.category}
-                  url={node.url}
+                  price={node.price}
                   id={node.id}
                   description={node.description}
                   imageUrl={node.imageUrl}
@@ -64,14 +62,21 @@ function Home() {
             onClick={() => {
               fetchMore({
                 variables: { after: endCursor },
+                updateQuery: (prevResult, { fetchMoreResult }) => {
+                  fetchMoreResult.products.edges = [
+                    ...prevResult.products.edges,
+                    ...fetchMoreResult.products.edges,
+                  ];
+                  return fetchMoreResult;
+                },
               });
             }}
           >
-            more
+            más
           </button>
         ) : (
           <p className="my-10 text-center font-medium">
-            You've reached the end!
+            Has alcanzado el final!
           </p>
         )}
       </div>

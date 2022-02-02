@@ -2,38 +2,8 @@
 ### Do not make changes to this file directly
 
 
-type Link {
-  category: String
-  description: String
-  id: String
-  imageUrl: String
-  index: Int
-  title: String
-  url: String
-}
-
-type LinkConnection {
-  """
-  https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
-  """
-  edges: [LinkEdge]
-
-  """
-  https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
-  """
-  pageInfo: PageInfo!
-}
-
-type LinkEdge {
-  """https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor"""
-  cursor: String!
-
-  """https://facebook.github.io/relay/graphql/connections.htm#sec-Node"""
-  node: Link
-}
-
 type Mutation {
-  createLink(category: String!, description: String!, imageUrl: String!, title: String!, url: String!): Link!
+  createProduct(description: String!, imageUrl: String!, price: String!, title: String!): Product!
 }
 
 """
@@ -61,8 +31,37 @@ type PageInfo {
   startCursor: String
 }
 
+type Product {
+  description: String
+  id: String
+  imageUrl: String
+  index: Int
+  price: String
+  title: String
+}
+
+type ProductConnection {
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
+  """
+  edges: [ProductEdge]
+
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
+  """
+  pageInfo: PageInfo!
+}
+
+type ProductEdge {
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor"""
+  cursor: String!
+
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Node"""
+  node: Product
+}
+
 type Query {
-  links(
+  products(
     """Returns the elements in the list that come after the specified cursor"""
     after: String
 
@@ -74,7 +73,7 @@ type Query {
 
     """Returns the last n elements from the list."""
     last: Int
-  ): LinkConnection
+  ): ProductConnection
 }
 
 enum Role {
@@ -83,7 +82,7 @@ enum Role {
 }
 
 type User {
-  bookmarks: [Link]
+  bookmarks: [Product]
   email: String
   id: String
   image: String

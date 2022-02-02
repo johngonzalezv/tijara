@@ -8,13 +8,13 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String?  @unique
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  email     String?   @unique
   image     String?
-  role      Role     @default(USER)
-  bookmarks Link[]
+  role      Role      @default(USER)
+  bookmarks Product[]
 }
 
 enum Role {
@@ -22,14 +22,13 @@ enum Role {
   ADMIN
 }
 
-model Link {
+model Product {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   title       String
   description String
-  url         String
+  price       String
   imageUrl    String
-  category    String
   users       User[]
 }
