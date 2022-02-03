@@ -14,7 +14,7 @@ model User {
   email     String?   @unique
   image     String?
   role      Role      @default(USER)
-  bookmarks Product[]
+  products  Product[]
 }
 
 enum Role {
@@ -30,5 +30,6 @@ model Product {
   description String
   price       String
   imageUrl    String
-  users       User[]
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
 }

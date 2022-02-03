@@ -1,5 +1,6 @@
 import { nonNull, objectType, stringArg, extendType } from 'nexus';
 import { connectionFromArraySlice, cursorToOffset } from 'graphql-relay';
+import { User } from './User';
 
 export const Product = objectType({
   name: 'Product',
@@ -10,9 +11,11 @@ export const Product = objectType({
     t.string('price');
     t.string('description');
     t.string('imageUrl');
+    t.field('user', { type: User });
   },
 });
 
+// get all products
 export const ProductQuery = extendType({
   type: 'Query',
   definition(t) {
@@ -40,6 +43,7 @@ export const ProductQuery = extendType({
   },
 });
 
+// Create product
 export const CreateProductMutation = extendType({
   type: 'Mutation',
   definition(t) {
@@ -70,6 +74,7 @@ export const CreateProductMutation = extendType({
           price: args.price,
           imageUrl: args.imageUrl,
           description: args.description,
+          user: {connect: { id: user.id }}
         }
         return await ctx.prisma.product.create({
           data: newProduct,

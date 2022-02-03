@@ -38,6 +38,7 @@ type Product {
   index: Int
   price: String
   title: String
+  user: User
 }
 
 type ProductConnection {
@@ -82,10 +83,10 @@ enum Role {
 }
 
 type User {
-  bookmarks: [Product]
   email: String
   id: String
   image: String
   name: String
+  products: [Product]
   role: Role
 }
