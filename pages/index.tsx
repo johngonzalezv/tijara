@@ -43,7 +43,7 @@ function Home() {
       <div className="container mx-auto max-w-5xl my-20 px-5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {data?.products.edges.map(({ node }, i) => (
-            <Link href={`/link/${node.id}`} key={i}>
+            <Link href={`/product/${node.id}`} key={i}>
               <a>
                 <Product
                   title={node.title}

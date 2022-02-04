@@ -62,6 +62,7 @@ type ProductEdge {
 }
 
 type Query {
+  product(id: String!): Product!
   products(
     """Returns the elements in the list that come after the specified cursor"""
     after: String

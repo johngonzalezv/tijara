@@ -83,3 +83,22 @@ export const CreateProductMutation = extendType({
     })
   },
 });
+
+//  Get unique Product
+export const ProductByIdQuery = extendType({
+  type: 'Query',
+  definition(t) {
+    t.nonNull.field('product', {
+      type: Product,
+      args: { id: nonNull(stringArg())},
+      resolve(_parent, args, ctx) {
+        const product = ctx.prisma.product.findUnique({
+          where: {
+            id: args.id
+          }
+        });
+        return product;
+      }
+    })
+  }
+});
