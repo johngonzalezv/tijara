@@ -4,6 +4,7 @@
 
 type Mutation {
   createProduct(description: String!, imageUrl: String!, price: String!, title: String!): Product!
+  updateProduct(description: String, id: String, imageUrl: String, price: String, title: String): Product!
 }
 
 """

@@ -84,7 +84,7 @@ export const CreateProductMutation = extendType({
   },
 });
 
-//  Get unique Product
+//  Get unique product
 export const ProductByIdQuery = extendType({
   type: 'Query',
   definition(t) {
@@ -101,4 +101,32 @@ export const ProductByIdQuery = extendType({
       }
     })
   }
+});
+
+// Update product
+export const UpdateProductMutation = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.nonNull.field('updateProduct', {
+      type: 'Product',
+      args: {
+        id: stringArg(),
+        title: stringArg(),
+        description: stringArg(),
+        imageUrl: stringArg(),
+        price: stringArg(),
+      },
+      resolve(_parent, args, ctx) {
+        return ctx.prisma.product.update({
+          where: { id: args.id},
+          data: {
+            title: args.title,
+            description: args.description,
+            imageUrl: args.imageUrl,
+            price: args.price
+          },
+        });
+      },
+    });
+  },
 });
