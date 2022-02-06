@@ -1,4 +1,4 @@
-import { nonNull, objectType, stringArg, extendType } from 'nexus';
+import { nonNull, objectType, stringArg, booleanArg, extendType } from 'nexus';
 import { connectionFromArraySlice, cursorToOffset } from 'graphql-relay';
 import { User } from './User';
 
@@ -12,6 +12,7 @@ export const Product = objectType({
     t.string('description');
     t.string('imageUrl');
     t.field('user', { type: User });
+    t.boolean('available');
   },
 });
 
@@ -66,7 +67,7 @@ export const CreateProductMutation = extendType({
           }
         });
 
-        if (user.role !== 'ADMIN') {
+        if (user.role !== 'PROVIDER') {
           throw new Error('You do not have permission to perform action')
         }
         const newProduct = {
@@ -115,6 +116,7 @@ export const UpdateProductMutation = extendType({
         description: stringArg(),
         imageUrl: stringArg(),
         price: stringArg(),
+        available: booleanArg(),
       },
       resolve(_parent, args, ctx) {
         return ctx.prisma.product.update({
@@ -123,7 +125,8 @@ export const UpdateProductMutation = extendType({
             title: args.title,
             description: args.description,
             imageUrl: args.imageUrl,
-            price: args.price
+            price: args.price,
+            available: args.available,
           },
         });
       },

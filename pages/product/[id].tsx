@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { gql, useMutation, useQuery } from '@apollo/client'
 import toast, {Toaster} from 'react-hot-toast';
 import { useForm } from 'react-hook-form'
+import { getSession } from '@auth0/nextjs-auth0';
+import prisma from '../../lib/prisma';
 
 const ProductQuery = gql `
     query ($id: String!) {
@@ -10,18 +12,20 @@ const ProductQuery = gql `
             price
             description
             imageUrl
+            available
         }
     }
 `;
 
 const ProductMutation = gql`
-    mutation ($id:String!, $title: String!, $description: String!, $price: String!, $imageUrl: String!) {
-        updateProduct(id: $id, title: $title, description: $description, price: $price, imageUrl: $imageUrl,) {
+    mutation ($id:String!, $title: String!, $description: String!, $price: String!, $imageUrl: String!, $available: Boolean!) {
+        updateProduct(id: $id, title: $title, description: $description, price: $price, imageUrl: $imageUrl, available: $available) {
             id
             title
             price
             description
             imageUrl
+            available
         }
     }
 `;
@@ -40,6 +44,7 @@ export default function ({ id }) {
     setValue('description', data?.product.description)
     setValue('price', data?.product.price)
     setValue('imageUrl', data?.product.imageUrl)
+    setValue('available', data?.product.available)
     
     const [updateProduct, mutationResult] = useMutation(ProductMutation,{
         onCompleted: ({updateProduct}) => {
@@ -47,6 +52,7 @@ export default function ({ id }) {
             setValue('description', updateProduct.description)
             setValue('price', updateProduct.price)
             setValue('imageUrl', updateProduct.imageUrl)
+            setValue('available', updateProduct.available)
         }
     });
 
@@ -54,8 +60,8 @@ export default function ({ id }) {
     if (error)   return <p>Oh no... {error.message}</p>;
         
     const onSubmit = async data => {
-        const {title, description, price, imageUrl} = data
-        const variables = { id, title, description, price, imageUrl}
+        const {title, description, price, imageUrl, available} = data
+        const variables = { id, title, description, price, imageUrl, available}
         try {
             toast.promise(updateProduct({ variables }), {
                 loading: 'Actualizando producto ...',
@@ -85,6 +91,13 @@ export default function ({ id }) {
                     className='border-none w-full'
                     {...register('price', { required: true })}
                 />
+                <div>
+                <label className="form-check-label inline-block text-gray-700 p-3" >Disponible:</label>
+                <input name="available" type="checkbox" role="switch" id="flexSwitchCheckDefault56"
+                    className="appearance-none w-9 rounded-full bg-white bg-contain bg-gray-300  cursor-pointer shadow-sm"
+                    {...register('available')}
+                />
+                </div>
                 <button
                     disabled={mutationResult.loading}
                     type="submit"
@@ -111,8 +124,44 @@ export default function ({ id }) {
     );
 }
 
-export const getServerSideProps = async ({ params }) => {
+export const getServerSideProps = async ({ req, res, params }) => {
+    const session = getSession(req, res)
+
+    if (!session) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/api/auth/login'
+            },
+            props: {}
+        }
+    }
+
+    const user = await prisma.user.findUnique({
+        select: {
+            email: true,
+            role: true
+        },
+        where: {
+            email: session.user.email
+        }
+    });
+
+    if (user.role !== 'PROVIDER') {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404'
+            },
+            props: {}
+        };
+    }
+    
     return {
         props: { id: params.id }
     };
 };
+
+// TODOS:
+// 1. An user can't update a product of other
+// 2. ux fail, when a product is edited, while data is returned, inputs take old value

@@ -13,13 +13,13 @@ model User {
   updatedAt DateTime  @updatedAt
   email     String?   @unique
   image     String?
-  role      Role      @default(USER)
+  role      Role      @default(SELLER)
   products  Product[]
 }
 
 enum Role {
-  USER
-  ADMIN
+  SELLER
+  PROVIDER
 }
 
 model Product {
@@ -32,4 +32,5 @@ model Product {
   imageUrl    String
   user        User     @relation(fields: [userId], references: [id])
   userId      String
+  available   Boolean  @default(true)
 }

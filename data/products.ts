@@ -6,6 +6,7 @@ export const products = [
     title: "Note 10S",
     price: "900.000",
     userId: "6a9d58b6-f961-4b95-8797-57d43773e622",
+    available: true,
   },
   {
     description: "RAM: 6GB, Almacenamiento: 128GB, Batería: 5000mAh 33W",
@@ -14,6 +15,7 @@ export const products = [
     title: "M4 Pro 5G",
     price: "1.030.000",
     userId: "6a9d58b6-f961-4b95-8797-57d43773e622",
+    available: true,
   },
   {
     description: "RAM: 6GB, Almacenamiento: 128GB, Batería: 5000mAh",
@@ -23,6 +25,7 @@ export const products = [
     title: "X3 GT",
     price: "1.120.000",
     userId: "6a9d58b6-f961-4b95-8797-57d43773e622",
+    available: false,
   },
   {
     description: "RAM: 6GB, Almacenamiento: 128GB, Batería: 5020mAh 33W",
@@ -31,5 +34,6 @@ export const products = [
     title: "Note 9 Pro",
     price: "960.000",
     userId: "6a9d58b6-f961-4b95-8797-57d43773e622",
+    available: true,
   },
 ];

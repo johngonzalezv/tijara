@@ -18,6 +18,7 @@ const AllProductsQuery = gql`
           title
           description
           id
+          available
         }
       }
     }
@@ -51,6 +52,7 @@ function Home() {
                   id={node.id}
                   description={node.description}
                   imageUrl={node.imageUrl}
+                  available={node.available}
                 />
               </a>
             </Link>

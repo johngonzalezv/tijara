@@ -129,7 +129,7 @@ export const getServerSideProps = async ({ req, res }) => {
         }
     });
 
-    if (user.role !== 'ADMIN') {
+    if (user.role !== 'PROVIDER') {
         return {
             redirect: {
                 permanent: false,
