@@ -11,8 +11,13 @@ export const Product = objectType({
     t.string('price');
     t.string('description');
     t.string('imageUrl');
-    t.field('user', { type: User });
     t.boolean('available');
+    t.field('user', {
+      type: User,
+      async resolve(parent, _args, ctx) {
+        return await ctx.prisma.user.findUnique({ where: {id: parent.userId} })
+      }
+    });
   },
 });
 

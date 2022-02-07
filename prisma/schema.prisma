@@ -13,6 +13,7 @@ model User {
   updatedAt DateTime  @updatedAt
   email     String?   @unique
   image     String?
+  company   String?
   role      Role      @default(SELLER)
   products  Product[]
 }

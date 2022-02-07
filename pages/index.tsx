@@ -19,6 +19,9 @@ const AllProductsQuery = gql`
           description
           id
           available
+          user {
+            company
+          }
         }
       }
     }
@@ -34,7 +37,6 @@ function Home() {
   if (error) return <p>Oh no... {error.message}</p>;
 
   const { endCursor, hasNextPage } = data?.products.pageInfo;
-  console.log(endCursor);
   return (
     <div>
       <Head>
@@ -53,6 +55,7 @@ function Home() {
                   description={node.description}
                   imageUrl={node.imageUrl}
                   available={node.available}
+                  company={node.user.company}
                 />
               </a>
             </Link>

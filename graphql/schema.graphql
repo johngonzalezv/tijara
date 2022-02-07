@@ -86,6 +86,7 @@ enum Role {
 }
 
 type User {
+  company: String
   email: String
   id: String
   image: String

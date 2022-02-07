@@ -8,6 +8,7 @@ export const User = objectType({
     t.string('name');
     t.string('email');
     t.string('image');
+    t.string('company');
     t.field('role', { type: Role });
     t.list.field('products', { type: Product });
     // t.list.field('products', {
