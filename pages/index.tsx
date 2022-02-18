@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { gql, useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { Product } from '../components/Product';
+import { useSelector } from 'react-redux';
 
 const AllProductsQuery = gql`
   query allProductsQuery($first: Int, $after: String) {
@@ -29,6 +30,8 @@ const AllProductsQuery = gql`
 `;
 
 function Home() {
+  const searchText = useSelector((state) => state.search.text)
+
   const { data, loading, error, fetchMore } = useQuery(AllProductsQuery, {
     variables: { first: 2 },
   });
@@ -37,12 +40,14 @@ function Home() {
   if (error) return <p>Oh no... {error.message}</p>;
 
   const { endCursor, hasNextPage } = data?.products.pageInfo;
+
   return (
     <div>
       <Head>
         <title>Tijara</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <p><b>Producto buscado: </b>{searchText}</p>
       <div className="container mx-auto max-w-5xl my-20 px-5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {data?.products.edges.map(({ node }, i) => (
