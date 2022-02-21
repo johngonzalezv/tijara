@@ -1,6 +1,7 @@
 import { nonNull, objectType, stringArg, booleanArg, extendType } from 'nexus';
 import { connectionFromArraySlice, cursorToOffset } from 'graphql-relay';
 import { User } from './User';
+import search from '../../components/Layout/search';
 
 export const Product = objectType({
   name: 'Product',
@@ -27,20 +28,29 @@ export const ProductQuery = extendType({
   definition(t) {
     t.connectionField('products', {
       type: Product,
-      resolve: async (_, { after, first }, ctx) => {
+      additionalArgs: {
+        searchText: stringArg()
+      },
+      resolve: async (_, { after, first, searchText }, ctx) => {
         const offset = after ? cursorToOffset(after) + 1 : 0;
         if (isNaN(offset)) throw new Error('cursor is invalid');
 
-        const [totalCount, items] = await Promise.all([
-          ctx.prisma.product.count(),
-          ctx.prisma.product.findMany({
-            take: first,
-            skip: offset,
-          }),
-        ]);
+        let productParams: {take: number, skip: number} = {take: first, skip: offset};
+        let whereParams: {where: object} = {where: { title: {search: searchText} }};
+        let countParams: {};
+
+        if (!!searchText) {
+          productParams = {...productParams, ...whereParams}
+          countParams = {...countParams, ...whereParams}
+        }
+
+        const [totalCount, products] = await Promise.all([
+          ctx.prisma.product.count(countParams),
+          ctx.prisma.product.findMany(productParams)
+        ])
 
         return connectionFromArraySlice(
-          items,
+          products,
           { first, after },
           { sliceStart: offset, arrayLength: totalCount }
         );

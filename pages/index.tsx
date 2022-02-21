@@ -5,8 +5,8 @@ import { Product } from '../components/Product';
 import { useSelector } from 'react-redux';
 
 const AllProductsQuery = gql`
-  query allProductsQuery($first: Int, $after: String) {
-    products(first: $first, after: $after) {
+  query allProductsQuery($first: Int, $after: String, $searchText: String) {
+    products(first: $first, after: $after, searchText: $searchText) {
       pageInfo {
         endCursor
         hasNextPage
@@ -33,7 +33,7 @@ function Home() {
   const searchText = useSelector((state) => state.search.text)
 
   const { data, loading, error, fetchMore } = useQuery(AllProductsQuery, {
-    variables: { first: 2 },
+    variables: { first: 2, searchText: searchText },
   });
 
   if (loading) return <p>Loading...</p>;
@@ -47,7 +47,6 @@ function Home() {
         <title>Tijara</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <p><b>Producto buscado: </b>{searchText}</p>
       <div className="container mx-auto max-w-5xl my-20 px-5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {data?.products.edges.map(({ node }, i) => (
